@@ -1,0 +1,2 @@
+# oijalgorithms
+oijalgorithms is a python package written in C containing algorithms often used in the Junior Polish Olympiad in Informatics as well as its High School counterpart, made for learning by writing them in python or using them as a shortcut instead of implementing them yourself.
