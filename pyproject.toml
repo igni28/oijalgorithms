@@ -1,0 +1,18 @@
+[project]
+name = "oijalgorithms"
+description = "My first package made for learning programming for the Polish Junior Olympiad"
+version = "1.0.0"
+authors = [
+    { name="Ignacy Stępniewski", email="roman.tyk@buziaczek.pl" },
+]
+license = "GPL-3.0-or-later"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.0.0"
+]
+
+[build-system]
+requires = [
+    "numpy>=2.0.0",
+    "setuptools"
+]
