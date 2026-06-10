@@ -2,6 +2,10 @@ import unittest
 
 import oijalgorithms
 
+def nww(a, b):
+        if a == 0 or b == 0:
+            return 0
+        return abs(a * b) // oijalgorithms.gcd(a, b)
 
 class TestAlgorytmyOIJ(unittest.TestCase):
     def test_gcd(self):
@@ -90,5 +94,10 @@ class TestAlgorytmyOIJ(unittest.TestCase):
         self.assertFalse(uf.connected(1, 4))
 
 
+    def test_test_your_function(self):
+        result = oijalgorithms.test_your_function(nww,oijalgorithms.lcm,1000)
+        self.assertTrue(result["ok"])
+
 if __name__ == "__main__":
     unittest.main()
+

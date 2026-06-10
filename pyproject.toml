@@ -1,9 +1,9 @@
 [project]
 name = "oijalgorithms"
 description = "My first package made for learning programming for the Polish Junior Olympiad"
-version = "1.0.0"
+version = "2.0"
 authors = [
-    { name="Ignacy Stępniewski", email="roman.tyk@buziaczek.pl" },
+    { name="Ignacy Stępniewski", email="stepniewskiigni@gmail.com" },
 ]
 license = "GPL-3.0-or-later"
 requires-python = ">=3.11"

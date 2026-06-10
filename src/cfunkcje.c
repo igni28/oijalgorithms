@@ -2,6 +2,7 @@
 #include <Python.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 long long gcd_c(long long a, long long b) {
     a = llabs(a);
@@ -65,7 +66,7 @@ PyObject* mod_pow(PyObject* self, PyObject* args) {
     }
 
     if (m <= 0) {
-        PyErr_SetString(PyExc_RuntimeError, "The modulo should be positive");
+        PyErr_Format(PyExc_RuntimeError, "The modulo should be positive");
         return NULL;
     }
 
@@ -603,6 +604,234 @@ PyObject* kmp_search(PyObject* self, PyObject* args) {
 
     return wyn;
 }
+//generatory testów i testowanie
+
+static long long random_ll(long long a, long long b) {
+    return (a + (long long)(rand() % (int)(b - a + 1)));
+}
+
+static PyObject* make_tuple1(PyObject* a) {
+    if (!a) return NULL;
+
+    PyObject* tuple = PyTuple_New(1);
+
+    if (!tuple) {
+        Py_DECREF(a);
+       return NULL;
+    }
+
+    PyTuple_SET_ITEM(tuple, 0, a);
+    return tuple;
+}
+
+static PyObject* make_tuple2(PyObject* a, PyObject* b) {
+    if (!a || !b) return NULL;
+
+    PyObject* tuple = PyTuple_New(2);
+
+    if (!tuple) {
+        Py_DECREF(a);
+        Py_DECREF(b);
+        return NULL;
+    }
+
+    PyTuple_SET_ITEM(tuple, 0, a);
+    PyTuple_SET_ITEM(tuple, 1, b);
+
+    return tuple;
+}
+
+static PyObject* random_int_list(Py_ssize_t n, long long a, long long b) {
+    PyObject* list = PyList_New(n);
+
+    for (Py_ssize_t i = 0; i < n; i++) {
+        PyObject* x = PyLong_FromLongLong(random_ll(a, b));
+        PyList_SET_ITEM(list, i, x);
+    }
+
+    return list;
+}
+
+static PyObject* increasing_int_list(Py_ssize_t n) {
+    PyObject* list = PyList_New(n);
+
+
+    long long licznik = (rand() % 10);
+
+    for (Py_ssize_t i = 0; i < n; i++) {
+        licznik += rand() % 5;
+
+        PyObject* x = PyLong_FromLongLong(licznik);
+
+        PyList_SET_ITEM(list, i, x);
+    }
+
+    return list;
+}
+
+
+static PyObject* random_lower_string(Py_ssize_t n) {
+    if (n == 0) {
+        return PyUnicode_FromStringAndSize("", 0);
+    }
+
+    char* tab = malloc((size_t)n);
+
+    if (!tab) {
+        return PyErr_NoMemory();
+    }
+
+    for (Py_ssize_t i = 0; i < n; i++) {
+        tab[i] = (char)('a' + rand() % 6);
+    }
+
+    PyObject* result = PyUnicode_FromStringAndSize(tab, n);
+    free(tab);
+
+    return result;
+}
+
+static PyObject* generate_args_for_function(const char* name) {
+
+    if (strcmp(name, "gcd") == 0 || strcmp(name, "lcm") == 0) {
+        long long a = random_ll(-1000, 1000);
+        long long b = random_ll(-1000, 1000);
+
+        return Py_BuildValue("(LL)", a, b);
+    }
+
+    if (strcmp(name, "mod_pow") == 0) {
+        long long a = random_ll(0, 1000);
+        long long b = random_ll(0, 1000);
+        long long mod = random_ll(1, 1000);
+
+        return Py_BuildValue("(LLL)", a, b, mod);
+    }
+
+    if (strcmp(name, "sieve") == 0) {
+        Py_ssize_t n = (Py_ssize_t)random_ll(0, 10000);
+
+        return Py_BuildValue("(n)", n);
+    }
+
+    if (strcmp(name, "lis_length") == 0 || strcmp(name, "prefix_sum") == 0) {
+        Py_ssize_t n = (Py_ssize_t)random_ll(1, 1000);
+        PyObject* list = random_int_list(n, -10, 100);
+
+        return make_tuple1(list);
+    }
+
+    if (strcmp(name, "binary_search") == 0) {
+        Py_ssize_t n = (Py_ssize_t)random_ll(0, 1000);
+
+        PyObject* list = increasing_int_list(n);
+        PyObject* x = PyLong_FromLongLong(random_ll(-10, 1010));
+
+        return make_tuple2(list, x);
+    }
+
+    if (strcmp(name, "kmp_search") == 0) {
+        PyObject* text = random_lower_string((Py_ssize_t)random_ll(1, 10000));
+        PyObject* pattern = random_lower_string((Py_ssize_t)random_ll(1, 100));
+
+        return make_tuple2(text, pattern);
+    }
+
+    PyErr_Format(PyExc_RuntimeError, "No generator found for The function '%s'", name);
+    return NULL;
+}
+
+static PyObject* test_your_function(PyObject* self, PyObject* args) {
+    PyObject* func1;
+    PyObject* func2;
+    Py_ssize_t n;
+    if (!PyArg_ParseTuple(args, "OOn", &func1, &func2, &n)) {
+        return NULL;
+    }
+
+    if (!PyCallable_Check(func1) || !PyCallable_Check(func2)) {
+        PyErr_Format(PyExc_RuntimeError, "Expected two functions");
+        return NULL;
+    }
+
+    if (n < 1) {
+        PyErr_Format(PyExc_RuntimeError, "n must be a positive integer");
+        return NULL;
+    }
+    srand((unsigned int)time(NULL));
+
+    PyObject* functionname = PyObject_GetAttrString(func2, "__name__");
+
+    if (!functionname) {
+        return NULL;
+    }
+
+    const char* name = PyUnicode_AsUTF8(functionname);
+
+    for (Py_ssize_t i = 0; i < n; i++) {
+        PyObject* test_args = generate_args_for_function(name);
+
+        PyObject* result1 = PyObject_CallObject(func1, test_args);
+        PyObject* result2 = PyObject_CallObject(func2, test_args);
+
+        int equal = PyObject_RichCompareBool(result1, result2, Py_EQ);
+
+        if (equal < 0) {
+            Py_DECREF(test_args);
+            Py_DECREF(result1);
+            Py_DECREF(result2);
+            Py_DECREF(functionname);
+            return NULL;
+        }
+
+        
+        
+
+        if (!equal) {
+            PyObject* info = Py_BuildValue(
+                "{s:O,s:n,s:s,s:O,s:O,s:O}",
+                "ok", Py_False,
+                "test_number", i + 1,
+                "function", name,
+                "args", test_args,
+                "result1", result1,
+                "result2", result2
+            );
+
+            Py_DECREF(test_args);
+            Py_DECREF(result1);
+            Py_DECREF(result2);
+            Py_DECREF(functionname);
+
+            return info;
+        }
+
+        //debugg
+        //PyObject* result = Py_BuildValue(
+        //"{s:O,s:n,s:s}",
+        //"BLASAAAAAAAAAAAAH", Py_True,
+        //"tests", n,
+        //"function", name
+        //);
+        //Py_DECREF(functionname);
+        //return result;
+
+        Py_DECREF(test_args);
+        Py_DECREF(result1);
+        Py_DECREF(result2);
+    }
+
+    PyObject* result = Py_BuildValue(
+        "{s:O,s:n,s:s}",
+        "ok", Py_True,
+        "tests", n,
+        "function", name
+    );
+
+    Py_DECREF(functionname);
+
+    return result;
+}
 
 
 
@@ -612,6 +841,7 @@ PyObject* kmp_search(PyObject* self, PyObject* args) {
 
 
 
+//FInd and Union
 typedef struct {
     PyObject_HEAD
     Py_ssize_t n;
@@ -646,7 +876,7 @@ static int UnionFind_init(UnionFindObject* self, PyObject* args, PyObject* kwds)
     if (!PyArg_ParseTuple(args, "n", &n)) return -1;
 
     if (n <= 0) {
-        PyErr_Format(PyExc_ValueError, "Expected a positive value");
+        PyErr_Format(PyExc_RuntimeError, "Expected a positive value");
         return -1;
     }
 
@@ -748,6 +978,7 @@ static PyMethodDef module_methods[] = {
     {"toposort", toposort, METH_VARARGS, "Returns a list of topologically sorted graph vertices"},
     {"lis_length", lis_length, METH_VARARGS, "Returns the length of the LIS (longest increasing subsequence) of a list"},
     {"kmp_search", kmp_search, METH_VARARGS, "Returns the indices of appereances of the given keyword in a string"},
+    {"test_your_function", test_your_function, METH_VARARGS, "Tests your function against the ones above on n randomly generated tests"},
     {NULL, NULL, 0, NULL}
 };
 

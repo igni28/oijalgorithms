@@ -91,6 +91,11 @@ def kmp_search(text, keyword):
     """
     return cfunkcje.kmp_search(text, keyword)
 
+def test_your_function(func1, func2, n):
+    """
+    Tests your function (func1) against this package's version on n randomly generated tests
+    """
+    return cfunkcje.test_your_function(func1,func2,n)
 
 class UnionFind:
     """

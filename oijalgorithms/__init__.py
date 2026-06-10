@@ -10,5 +10,6 @@ from .funkcje import (
     toposort,
     lis_length,
     kmp_search,
+    test_your_function,
     UnionFind,
 )
