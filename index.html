@@ -532,17 +532,38 @@
 cd oijalgorithms
 python -m pip install -e .
 </code></pre>
-<p>On Windows, you can use:</p>
-<pre><code class="language-bash">py -m pip install -e .
-</code></pre>
 <h3 id="check-if-it-works">Check if it works</h3>
 <p>Run Python and import the package:</p>
 <pre><code class="language-python">import oijalgorithms
-
-print(oijalgorithms.gcd(20, 15))
+</code></pre>
+<p>Then check if it works, for example by calling the gcd function:</p>
+<pre><code class="language-python">print(oijalgorithms.gcd(20, 15))
 </code></pre>
 <p>Expected output:</p>
 <pre><code class="language-text">5
+</code></pre>
+<p>There are, of coure more complicated algorithms included like this one:</p>
+<pre><code class="language-python">print(oijalgorithms.kmp_search(&quot;haystackneedlehayhayhayneedlehay&quot;,&quot;needle&quot;))
+</code></pre>
+<p>Which helps when you need to find keywords in a text efficiently, returning:</p>
+<pre><code class="language-python">[8,23]
+</code></pre>
+<p>There is also a built-in tester if you decide to learn and write these algorithms yourself (which is recommended):</p>
+<pre><code class="language-python">def your_prefix_sums(values):
+    result = []
+    current_sum = 0
+
+    for value in values:
+        current_sum += value
+        result.append(current_sum)
+
+    return result
+
+print(oijalgorithms.test_your_function(your_prefix_sums, 
+        oijalgorithms.prefix_sum, 1000))
+</code></pre>
+<p>Your code has just been tested on a 1000 random lists! see below for results:</p>
+<pre><code class="language-python">{'ok': True, 'tests': 1000, 'function': 'prefix_sum'}
 </code></pre>
 
 
