@@ -1,0 +1,32 @@
+site_name: oijalgorithms
+site_description: Algorithms package written in C for Python
+
+repo_url: https://github.com/igni28/oijalgorithms
+repo_name: igni28/oijalgorithms
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Documentation: documentation.md
