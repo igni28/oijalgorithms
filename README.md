@@ -4,9 +4,9 @@ oijalgorithms is a python package written in C containing algorithms often used 
 ## Installation
 The package requires Python 3 and a C compiler
 # To download it from github:
-git clone github.com/igni28/oijalgorithms
-cd oijalgorithms
+git clone github.com/igni28/oijalgorithms  
+cd oijalgorithms  
 python -m pip install -e .
 # Then check if it works (in python) for example by running:
-import oijalgorithms
+import oijalgorithms  
 print(oijalgorithms.gcd(20, 15) <- this should print 5
