@@ -33,7 +33,7 @@ Expected output:
 ```text
 5
 ```
-There are, of coure more complicated algorithms included like this one:
+There are, of course more complicated algorithms included like this one:
 ```python
 print(oijalgorithms.kmp_search("haystackneedlehayhayhayneedlehay","needle"))
 ```
